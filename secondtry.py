@@ -1,6 +1,30 @@
 import streamlit as st
 import pandas as pd
 
+# --- Custom Styling ---
+
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #f8f9fa;
+    }
+    h1 {
+        color: #3f72af;
+    }
+    .stButton>button {
+        background-color: #ff6f61;
+        color: white;
+    }
+    .stSelectbox label, .stMultiselect label {
+        font-weight: bold;
+        color: #333;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("Market Basket Recommendation system")
 st.markdown("Select an item to see frequently bought-together recommendations!")
 
