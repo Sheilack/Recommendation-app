@@ -13,20 +13,21 @@ def load_rules():
 
     def safe_eval(val):
         try:
-            return ast.literal_eval(val)
-        except (ValueError, SyntaxError):
+            result = ast.literal_eval(val)
+            return set(result) if isinstance(result, (list, tuple, set)) else set()
+        except (ValueError, SyntaxError, TypeError):
             return set()
 
     rules['antecedents'] = rules['antecedents'].apply(safe_eval)
     rules['consequents'] = rules['consequents'].apply(safe_eval)
     return rules
 
-
 rules = load_rules()
 
-# Extract item names from antecedents
+# Build dropdown list
+items = sorted({item for s in rules['antecedents'] if s for item in s})
 
-items = sorted({item for pair in rules['antecedents'] for item in pair})
+selected = st.selectbox("Choose an item:", items)
 
 # User input and Dropdown input
 name = st.text_input("Enter your name:")
