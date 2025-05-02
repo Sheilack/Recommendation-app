@@ -26,13 +26,12 @@ rules = load_rules()
 
 # Build dropdown list
 items = sorted({item for s in rules['antecedents'] if s for item in s})
-selected = st.selectbox("Choose an item:", items, key="item_selector")
-
-# selected = st.selectbox("Choose an item:", items)
 
 # User input and Dropdown input
 name = st.text_input("Enter your name:")
-selected = st.selectbox("Choose an item:", items)
+selected = st.selectbox("Choose an item:", items, key="item_selector")
+
+# selected = st.selectbox("Choose an item:", items)
 
 # Filter rules where the selected item is in antecedents
 
