@@ -25,6 +25,9 @@ def load_rules():
 
 rules = load_rules()
 
+st.write("Sample antecedents:", rules['antecedents'].head())
+
+
 # 👇 Only include non-empty sets
 items = sorted({item for s in rules['antecedents'] if s for item in s})
 
