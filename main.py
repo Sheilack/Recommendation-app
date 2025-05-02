@@ -1,0 +1,44 @@
+import streamlit as st
+import pandas as pd
+import ast
+
+st.title("🛍️ Market Basket Recommendation system")
+st.markdown("Select an item to see frequently bought-together recommendations!")
+
+# Load association rules
+@st.cache_data
+def load_rules():
+    rules = pd.read_csv("association_rules.csv")
+    rules['antecedents'] = rules['antecedents'].apply(ast.literal_eval)
+    rules['consequents'] = rules['consequents'].apply(ast.literal_eval)
+    return rules
+
+rules = load_rules()
+
+# Extract item names from antecedents
+
+items = sorted({item for pair in rules['antecedents'] for item in pair})
+
+# User input and Dropdown input
+name = st.text_input("Enter your name:")
+selected = st.selectbox("Choose an item:", items)
+
+
+# Filter rules where the selected item is in antecedents
+
+recommendations = rules[rules['antecedents'].apply(lambda x: selected in x)]
+
+if not recommendations.empty:
+    st.subheader("🧾 Recommendations:")
+    for _, row in recommendations.iterrows():
+        suggested = ", ".join(row['consequents'])
+        st.markdown(f"**{suggested}** (Confidence: {row['confidence']:.2f}, Lift: {row['lift']:.2f})")
+else:
+    st.warning("No recommendations found for this item.")
+
+
+
+
+# Optional extras
+st.markdown("---")
+st.caption("Made with ❤️ using Streamlit")
