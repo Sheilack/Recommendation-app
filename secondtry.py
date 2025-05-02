@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-st.title("🛍️ Market Basket Recommender")
-st.markdown("Select an item to see what is frequently bought with it.")
+st.title("Market Basket Recommendation system")
+st.markdown("Select an item to see frequently bought-together recommendations!")
 
-# Load rules (no need for ast.literal_eval anymore)
+# Load rules
+
 @st.cache_data
 def load_rules():
     rules = pd.read_csv("association_rules.csv")
@@ -14,12 +15,15 @@ def load_rules():
 
 rules = load_rules()
 
-# Create dropdown list from antecedents
+# user input and a dropdown list from antecedents
+
+name = st.text_input("Enter your name:")
 items = sorted({item for s in rules['antecedents'] if s for item in s})
 st.write("Total items loaded into dropdown:", len(items))  # DEBUG
 selected = st.selectbox("Choose an item:", items, key="item_selector")
 
 # Show recommendations
+
 if selected:
     recommendations = rules[rules['antecedents'].apply(lambda x: selected in x)]
 
