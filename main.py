@@ -10,24 +10,31 @@ st.markdown("Select an item to see frequently bought-together recommendations!")
 @st.cache_data
 def load_rules():
     rules = pd.read_csv("association_rules.csv")
-
     def safe_eval(val):
-        try:
-            result = ast.literal_eval(val)
-            return set(result) if isinstance(result, (list, tuple, set)) else set()
-        except (ValueError, SyntaxError, TypeError):
-            return set()
-
+      try:
+        result = ast.literal_eval(val)
+        if isinstance(result, (set, list, tuple)) and all(isinstance(x, str) for x in result):
+            return set(result)
+        return set()
+      except (ValueError, SyntaxError, TypeError):
+        return set()  
+      
     rules['antecedents'] = rules['antecedents'].apply(safe_eval)
     rules['consequents'] = rules['consequents'].apply(safe_eval)
     return rules
 
 rules = load_rules()
 
+# 👇 Only include non-empty sets
+items = sorted({item for s in rules['antecedents'] if s for item in s})
+
+st.write("Total items loaded into dropdown:", len(items))  # debug
+
 # Build dropdown list
 items = sorted({item for s in rules['antecedents'] if s for item in s})
 
 # User input and Dropdown input
+
 name = st.text_input("Enter your name:")
 selected = st.selectbox("Choose an item:", items, key="item_selector")
 
