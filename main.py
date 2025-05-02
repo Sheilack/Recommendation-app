@@ -6,12 +6,21 @@ st.title("🛍️ Market Basket Recommendation system")
 st.markdown("Select an item to see frequently bought-together recommendations!")
 
 # Load association rules
+
 @st.cache_data
 def load_rules():
     rules = pd.read_csv("association_rules.csv")
-    rules['antecedents'] = rules['antecedents'].apply(ast.literal_eval)
-    rules['consequents'] = rules['consequents'].apply(ast.literal_eval)
+
+    def safe_eval(val):
+        try:
+            return ast.literal_eval(val)
+        except (ValueError, SyntaxError):
+            return set()
+
+    rules['antecedents'] = rules['antecedents'].apply(safe_eval)
+    rules['consequents'] = rules['consequents'].apply(safe_eval)
     return rules
+
 
 rules = load_rules()
 
