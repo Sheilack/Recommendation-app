@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import ast
 
-st.title("🛍️ Market Basket Recommendation system")
+st.title("Market Basket Recommendation system")
 st.markdown("Select an item to see frequently bought-together recommendations!")
 
 # Load association rules
@@ -26,13 +26,13 @@ rules = load_rules()
 
 # Build dropdown list
 items = sorted({item for s in rules['antecedents'] if s for item in s})
+selected = st.selectbox("Choose an item:", items, key="item_selector")
 
-selected = st.selectbox("Choose an item:", items)
+# selected = st.selectbox("Choose an item:", items)
 
 # User input and Dropdown input
 name = st.text_input("Enter your name:")
 selected = st.selectbox("Choose an item:", items)
-
 
 # Filter rules where the selected item is in antecedents
 
@@ -45,8 +45,6 @@ if not recommendations.empty:
         st.markdown(f"**{suggested}** (Confidence: {row['confidence']:.2f}, Lift: {row['lift']:.2f})")
 else:
     st.warning("No recommendations found for this item.")
-
-
 
 
 # Optional extras
